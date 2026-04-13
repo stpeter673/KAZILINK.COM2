@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaziLink — Jobs & Talent Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #1a3d1f;
+    --green-mid: #2e7d32;
+    --green-bright: #43a047;
+    --green-light: #a5d6a7;
+    --green-pale: #e8f5e9;
+    --gold: #f9a825;
+    --gold-light: #fff8e1;
+    --text: #1a1a1a;
+    --text-light: #555;
+    --white: #ffffff;
+    --bg: #f4f6f4;
+    --border: #d8e8d8;
+    --shadow: 0 4px 20px rgba(46,125,50,0.10);
+    --shadow-strong: 0 8px 32px rgba(46,125,50,0.18);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--green-dark);
+    color: white;
+    padding: 28px 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(102,187,106,0.18) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(249,168,37,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-inner {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-icon {
+    width: 46px; height: 46px;
+    background: var(--gold);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .logo-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .logo-text p {
+    font-size: 12px; opacity: 0.7; margin-top: 2px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .header-stats {
+    display: flex; gap: 16px;
+  }
+  .stat {
+    text-align: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--gold);
+  }
+  .stat-label { font-size: 11px; opacity: 0.65; }
+
+  /* ─── NAV ─── */
+  nav {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 14px 18px;
+    white-space: nowrap;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+    border-bottom-width: 3px;
+    margin-bottom: -2px;
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .nav-item:hover { color: var(--green-mid); background: var(--green-pale); }
+  .nav-item.active {
+    color: var(--green-mid);
+    border-bottom-color: var(--green-mid);
+    background: var(--green-pale);
+  }
+  .nav-item .nav-icon { font-size: 16px; }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    display: none;
+    padding: 20px 16px 40px;
+    animation: fadeIn 0.3s ease;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── PAGE TITLE ─── */
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    color: var(--green-dark);
+    margin-bottom: 4px;
+  }
+  .page-sub {
+    font-size: 13px; color: var(--text-light);
+    margin-bottom: 18px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover { box-shadow: var(--shadow-strong); transform: translateY(-2px); }
+
+  /* ─── JOB CARDS ─── */
+  .job-card { position: relative; overflow: hidden; }
+  .job-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--green-bright);
+    border-radius: 4px 0 0 4px;
+  }
+  .job-card.featured::before { background: var(--gold); }
+  .job-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px; margin-bottom: 10px;
+  }
+  .job-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--green-dark);
+  }
+  .badge {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .badge-featured { background: var(--gold); color: var(--green-dark); }
+  .badge-new { background: var(--green-pale); color: var(--green-mid); border: 1px solid var(--green-light); }
+  .job-meta {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-size: 13px; color: var(--text-light);
+    margin-bottom: 14px;
+  }
+  .job-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 600;
+    padding: 10px 20px;
+    border: none; border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary {
+    background: var(--green-mid); color: white;
+  }
+  .btn-primary:hover { background: var(--green-dark); transform: scale(1.02); }
+  .btn-outline {
+    background: transparent; color: var(--green-mid);
+    border: 2px solid var(--green-mid);
+  }
+  .btn-outline:hover { background: var(--green-pale); }
+  .btn-gold {
+    background: var(--gold); color: var(--green-dark);
+  }
+  .btn-gold:hover { background: #f57f17; color: white; }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .btn-full { width: 100%; justify-content: center; }
+
+  /* ─── FORM ─── */
+  .form-group { margin-bottom: 14px; }
+  .form-label {
+    display: block;
+    font-size: 13px; font-weight: 500;
+    color: var(--green-dark);
+    margin-bottom: 5px;
+  }
+  .form-input {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--white);
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(46,125,50,0.10);
+  }
+  textarea.form-input { resize: vertical; min-height: 90px; }
+
+  /* ─── APP LIST ─── */
+  .app-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px;
+    background: var(--green-pale);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+  }
+  .app-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--green-bright);
+    color: white; font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .app-info h4 { font-size: 15px; font-weight: 600; }
+  .app-info p { font-size: 12px; color: var(--text-light); }
+
+  /* ─── TALENT ─── */
+  .talent-card { overflow: hidden; }
+  .talent-video {
+    width: 100%; border-radius: var(--radius-sm);
+    background: #111; aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 13px;
+    overflow: hidden;
+  }
+  .talent-video video { width: 100%; border-radius: var(--radius-sm); }
+  .talent-video-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    border-radius: var(--radius-sm);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: white; gap: 8px;
+  }
+  .talent-video-placeholder .play-icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .talent-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px; flex-wrap: wrap; gap: 8px;
+  }
+  .talent-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+  .talent-skill { font-size: 13px; color: var(--text-light); }
+
+  /* ─── SCHOLARSHIPS ─── */
+  .scholarship-card { border-left: 4px solid var(--gold); }
+  .scholarship-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px; margin-bottom: 8px;
+  }
+  .scholarship-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 700;
+  }
+  .deadline-badge {
+    font-size: 11px; padding: 3px 9px; border-radius: 20px;
+    background: var(--gold-light); color: #b45309;
+    border: 1px solid #fde68a; white-space: nowrap;
+  }
+  .scholarship-desc { font-size: 13px; color: var(--text-light); line-height: 1.5; margin-bottom: 12px; }
+
+  /* ─── ADMIN ─── */
+  .admin-banner {
+    background: var(--green-dark);
+    color: white;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .admin-banner-icon { font-size: 28px; }
+  .admin-banner h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+  .admin-banner p { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+  .monetize-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-top: 10px;
+  }
+  .monetize-item {
+    background: var(--green-pale);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .monetize-item .m-icon { font-size: 20px; margin-bottom: 4px; }
+  .monetize-item .m-label { font-weight: 600; color: var(--green-dark); margin-bottom: 2px; }
+  .monetize-item .m-desc { color: var(--text-light); font-size: 12px; }
+
+  /* ─── TOAST ─── */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green-dark); color: white;
+    padding: 12px 22px; border-radius: 30px;
+    font-size: 14px; font-weight: 500;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    z-index: 999; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    display: flex; align-items: center; gap: 8px;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center; padding: 36px 20px;
+    color: var(--text-light);
+  }
+  .empty-state .empty-icon { font-size: 36px; margin-bottom: 10px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    border: none; border-top: 1.5px solid var(--border);
+    margin: 18px 0;
+  }
+
+  /* ─── FILTER BAR ─── */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .filter-chip {
+    font-size: 12px; font-weight: 600;
+    padding: 5px 13px; border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: white; cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-light);
+  }
+  .filter-chip.active, .filter-chip:hover {
+    background: var(--green-mid); color: white;
+    border-color: var(--green-mid);
+  }
+
+  /* ─── SEARCH ─── */
+  .search-wrap {
+    position: relative; margin-bottom: 14px;
+  }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light); font-size: 15px;
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%; padding: 11px 14px 11px 36px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; background: white;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus {
+    outline: none; border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(46,125,50,0.10);
+  }
+
+  @media (max-width: 480px) {
+    .header-stats { display: none; }
+    .monetize-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">💼</div>
+      <div class="logo-text">
+        <h1>KaziLink</h1>
+        <p>Kenya's Talent & Jobs Platform</p>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat">
+        <div class="stat-num" id="jobCount">12</div>
+        <div class="stat-label">Jobs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="appCount">0</div>
+        <div class="stat-label">Applications</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Scholarships</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <button class="nav-item active" onclick="showSection('jobs', this)">
+    <span class="nav-icon">🔍</span> Jobs
+  </button>
+  <button class="nav-item" onclick="showSection('applications', this)">
+    <span class="nav-icon">📋</span> Apply
+  </button>
+  <button class="nav-item" onclick="showSection('talent', this)">
+    <span class="nav-icon">🎬</span> Talent
+  </button>
+  <button class="nav-item" onclick="showSection('scholarships', this)">
+    <span class="nav-icon">🎓</span> Scholarships
+  </button>
+  <button class="nav-item" onclick="showSection('admin', this)">
+    <span class="nav-icon">⚙️</span> Admin
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div id="toast">✅ Done!</div>
+
+<!-- ═══ JOBS ═══ -->
+<div id="jobs" class="section active">
+  <p class="page-title">Browse Jobs</p>
+  <p class="page-sub">Latest opportunities across Kenya</p>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔎</span>
+    <input class="search-input" id="jobSearch" placeholder="Search jobs…" oninput="filterJobs()">
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-chip" onclick="setFilter('nairobi', this)">Nairobi</button>
+    <button class="filter-chip" onclick="setFilter('remote', this)">Remote</button>
+    <button class="filter-chip" onclick="setFilter('featured', this)">⭐ Featured</button>
+  </div>
+
+  <div id="jobList">
+    <!-- Construction -->
+    <div class="card job-card" data-tags="nairobi construction">
+      <div class="job-header">
+        <div class="job-title">🔨 Construction Worker</div>
+        <span class="badge badge-new">NEW</span>
+      </div>
+      <div class="job-meta">
+        <span>📍 Nairobi, CBD</span>
+        <span>💵 KES 800/day</span>
+        <span>🕐 Full-time</span>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="applyFor('Construction Worker')">Apply Now →</button>
+    </div>
+
+    <!-- Graphic Designer (Featured) -->
+    <div class="card job-card featured" data-tags="remote featured design">
+      <div class="job-header">
+        <div class="job-title">💻 Graphic Designer</div>
+        <span class="badge badge-featured">⭐ Featured</span>
+      </div>
+      <div class="job-meta">
+        <span>📍 Remote</span>
+        <span>💵 KES 50,000/mo</span>
+        <span>🕐 Contract</span>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="applyFor('Graphic Designer')">Apply Now →</button>
+    </div>
+
+    <!-- Plumber -->
+    <div class="card job-card" data-tags="nairobi plumbing">
+      <div class="job-header">
+        <div class="job-title">🔧 Plumber</div>
+        <span class="badge badge-new">NEW</span>
+      </div>
+      <div class="job-meta">
+        <span>📍 Westlands, Nairobi</span>
+        <span>💵 KES 1,200/day</span>
+        <span>🕐 Casual</span>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="applyFor('Plumber')">Apply Now →</button>
+    </div>
+
+    <!-- Data Entry (Featured) -->
+    <div class="card job-card featured" data-tags="remote featured data">
+      <div class="job-header">
+        <div class="job-title">📊 Data Entry Clerk</div>
+        <span class="badge badge-featured">⭐ Featured</span>
+      </div>
+      <div class="job-meta">
+        <span>📍 Remote</span>
+        <span>💵 KES 25,000/mo</span>
+        <span>🕐 Part-time</span>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="applyFor('Data Entry Clerk')">Apply Now →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APPLICATIONS ═══ -->
+<div id="applications" class="section">
+  <p class="page-title">Job Applications</p>
+  <p class="page-sub" id="applyingFor">Fill in your details to apply</p>
+
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">Full Name *</label>
+      <input class="form-input" id="name" placeholder="e.g. Jane Wanjiku" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone Number *</label>
+      <input class="form-input" id="phone" placeholder="e.g. 0712 345 678" type="tel" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Skills & Experience</label>
+      <textarea class="form-input" id="skills" placeholder="Describe your relevant skills and experience…"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="submitApplication()">
+      📨 Submit Application
+    </button>
+  </div>
+
+  <hr class="divider">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <p class="page-title" style="font-size:17px;margin:0">Submitted Applications</p>
+    <button class="btn btn-outline btn-sm" onclick="loadApplications()">Refresh ↻</button>
+  </div>
+
+  <div id="appList">
+    <div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <p>No applications yet. Submit one above!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TALENT ═══ -->
+<div id="talent" class="section">
+  <p class="page-title">Talent Showcase</p>
+  <p class="page-sub">Discover skilled workers across Kenya</p>
+
+  <div class="card talent-card">
+    <div class="talent-video">
+      <video controls>
+        <source src="video1.mp4" type="video/mp4">
+        <div class="talent-video-placeholder">
+          <div class="play-icon">▶</div>
+          <span style="font-size:13px">Carpentry Demo</span>
+        </div>
+      </video>
+    </div>
+    <div class="talent-footer">
+      <div>
+        <div class="talent-name">James Kariuki</div>
+        <div class="talent-skill">⚒️ Carpentry & Joinery • Nairobi</div>
+      </div>
+      <button class="btn btn-primary btn-sm">Contact</button>
+    </div>
+  </div>
+
+  <div class="card talent-card">
+    <div class="talent-video-placeholder">
+      <div class="play-icon">▶</div>
+      <span style="font-size:13px;">Welding Demo — Upload a video to display</span>
+    </div>
+    <div class="talent-footer">
+      <div>
+        <div class="talent-name">Peter Omondi</div>
+        <div class="talent-skill">🔩 Welding & Metal Fab • Kisumu</div>
+      </div>
+      <button class="btn btn-primary btn-sm">Contact</button>
+    </div>
+  </div>
+
+  <div class="card" style="border: 2px dashed var(--border); background: var(--green-pale); text-align:center; padding: 24px;">
+    <div style="font-size:28px;margin-bottom:8px;">📹</div>
+    <p style="font-weight:600;color:var(--green-dark);margin-bottom:4px;">Showcase Your Talent</p>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">Upload a short video of your skills to get hired faster</p>
+    <button class="btn btn-outline">+ Upload Video</button>
+  </div>
+</div>
+
+<!-- ═══ SCHOLARSHIPS ═══ -->
+<div id="scholarships" class="section">
+  <p class="page-title">Scholarships</p>
+  <p class="page-sub">Education funding opportunities</p>
+
+  <div class="card scholarship-card">
+    <div class="scholarship-header">
+      <div class="scholarship-title">🎓 University Scholarship</div>
+      <span class="deadline-badge">⏰ June 2026</span>
+    </div>
+    <div class="scholarship-desc">Full tuition scholarship for Kenyan students pursuing STEM degrees. Open to Form 4 leavers with B+ and above.</div>
+    <button class="btn btn-primary btn-sm">Apply Now →</button>
+  </div>
+
+  <div class="card scholarship-card">
+    <div class="scholarship-header">
+      <div class="scholarship-title">💻 Tech Skills Bursary</div>
+      <span class="deadline-badge">⏰ May 2026</span>
+    </div>
+    <div class="scholarship-desc">KES 30,000 bursary for ICT & coding bootcamps. Covers tuition and laptop allowance for youth aged 18–30.</div>
+    <button class="btn btn-primary btn-sm">Apply Now →</button>
+  </div>
+
+  <div class="card scholarship-card">
+    <div class="scholarship-header">
+      <div class="scholarship-title">🏗️ Vocational Training Grant</div>
+      <span class="deadline-badge">⏰ Rolling</span>
+    </div>
+    <div class="scholarship-desc">Government-funded grant for artisan and technical courses. Covers plumbing, carpentry, electrical, and more.</div>
+    <button class="btn btn-primary btn-sm">Apply Now →</button>
+  </div>
+</div>
+
+<!-- ═══ ADMIN ═══ -->
+<div id="admin" class="section">
+  <div class="admin-banner">
+    <div class="admin-banner-icon">⚙️</div>
+    <div>
+      <h3>Admin Panel</h3>
+      <p>Manage jobs, talent, and platform settings</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:14px;">Post New Job</p>
+    <div class="form-group">
+      <label class="form-label">Job Title</label>
+      <input class="form-input" id="adminTitle" placeholder="e.g. Electrician">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Location</label>
+      <input class="form-input" id="adminLocation" placeholder="e.g. Nairobi or Remote">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Salary / Pay</label>
+      <input class="form-input" id="adminSalary" placeholder="e.g. KES 1,500/day">
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="postJob()">📌 Post Job</button>
+      <button class="btn btn-gold" onclick="postJob(true)">⭐ Post as Featured</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:10px;">Monetization</p>
+    <div class="monetize-row">
+      <div class="monetize-item">
+        <div class="m-icon">⭐</div>
+        <div class="m-label">Featured Jobs</div>
+        <div class="m-desc">Charge employers KES 500–2,000 for featured placement</div>
+      </div>
+      <div class="monetize-item">
+        <div class="m-icon">📢</div>
+        <div class="m-desc">Banner ad slots available for sponsors</div>
+        <div class="m-label">Ad Space</div>
+      </div>
+      <div class="monetize-item">
+        <div class="m-icon">👑</div>
+        <div class="m-label">Premium Listings</div>
+        <div class="m-desc">Top-of-page premium job slots ready</div>
+      </div>
+      <div class="monetize-item">
+        <div class="m-icon">📊</div>
+        <div class="m-label">Analytics</div>
+        <div class="m-desc">Track applications & employer activity</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:10px;">Platform Stats</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="stat" style="background:var(--green-pale);border:1px solid var(--border);flex:1;min-width:100px;">
+        <div class="stat-num" style="color:var(--green-mid)" id="adminApps">0</div>
+        <div class="stat-label" style="color:var(--text-light)">Applications</div>
+      </div>
+      <div class="stat" style="background:var(--green-pale);border:1px solid var(--border);flex:1;min-width:100px;">
+        <div class="stat-num" style="color:var(--green-mid)" id="adminJobs">4</div>
+        <div class="stat-label" style="color:var(--text-light)">Active Jobs</div>
+      </div>
+      <div class="stat" style="background:var(--gold-light);border:1px solid #fde68a;flex:1;min-width:100px;">
+        <div class="stat-num" style="color:#b45309">2</div>
+        <div class="stat-label" style="color:var(--text-light)">Featured</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Navigation ── */
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (btn) btn.classList.add('active');
+    if (id === 'applications') loadApplications();
+    if (id === 'admin') updateAdminStats();
+  }
+
+  /* ── Toast ── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  /* ── Apply for specific job ── */
+  function applyFor(jobTitle) {
+    document.getElementById('applyingFor').textContent = 'Applying for: ' + jobTitle;
+    showSection('applications', document.querySelector('.nav-item:nth-child(2)'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Submit Application ── */
+  function submitApplication() {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const skills = document.getElementById('skills').value.trim();
+
+    if (!name || !phone) { showToast('❗ Please fill in name and phone'); return; }
+
+    const apps = JSON.parse(localStorage.getItem('kl_applications')) || [];
+    const job = document.getElementById('applyingFor').textContent.replace('Applying for: ', '') || 'General';
+    apps.push({ name, phone, skills, job, date: new Date().toLocaleDateString('en-KE') });
+    localStorage.setItem('kl_applications', JSON.stringify(apps));
+
+    document.getElementById('name').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('skills').value = '';
+    document.getElementById('applyingFor').textContent = 'Fill in your details to apply';
+
+    updateAppCount();
+    showToast('✅ Application submitted!');
+    loadApplications();
+  }
+
+  /* ── Load Applications ── */
+  function loadApplications() {
+    const list = document.getElementById('appList');
+    const apps = JSON.parse(localStorage.getItem('kl_applications')) || [];
+
+    if (apps.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">📂</div><p>No applications yet. Submit one above!</p></div>`;
+      return;
+    }
+
+    list.innerHTML = apps.map((app, i) => `
+      <div class="app-card">
+        <div class="app-avatar">${app.name.charAt(0).toUpperCase()}</div>
+        <div class="app-info" style="flex:1">
+          <h4>${app.name}</h4>
+          <p>${app.phone} · ${app.job} · ${app.date}</p>
+          ${app.skills ? `<p style="margin-top:3px;font-size:12px;color:#333">${app.skills.slice(0, 80)}${app.skills.length > 80 ? '…' : ''}</p>` : ''}
+        </div>
+        <button onclick="deleteApp(${i})" style="background:none;border:none;cursor:pointer;font-size:18px;opacity:0.4;padding:4px;">🗑</button>
+      </div>
+    `).join('');
+  }
+
+  /* ── Delete Application ── */
+  function deleteApp(i) {
+    const apps = JSON.parse(localStorage.getItem('kl_applications')) || [];
+    apps.splice(i, 1);
+    localStorage.setItem('kl_applications', JSON.stringify(apps));
+    updateAppCount();
+    loadApplications();
+    showToast('🗑 Application removed');
+  }
+
+  /* ── Update Count in Header ── */
+  function updateAppCount() {
+    const apps = JSON.parse(localStorage.getItem('kl_applications')) || [];
+    document.getElementById('appCount').textContent = apps.length;
+  }
+
+  /* ── Admin Stats ── */
+  function updateAdminStats() {
+    const apps = JSON.parse(localStorage.getItem('kl_applications')) || [];
+    document.getElementById('adminApps').textContent = apps.length;
+    const jobs = JSON.parse(localStorage.getItem('kl_jobs')) || [];
+    document.getElementById('adminJobs').textContent = 4 + jobs.length;
+  }
+
+  /* ── Post Job ── */
+  function postJob(featured = false) {
+    const title = document.getElementById('adminTitle').value.trim();
+    const location = document.getElementById('adminLocation').value.trim();
+    const salary = document.getElementById('adminSalary').value.trim();
+
+    if (!title) { showToast('❗ Please enter a job title'); return; }
+
+    const jobs = JSON.parse(localStorage.getItem('kl_jobs')) || [];
+    jobs.push({ title, location: location || 'Kenya', salary: salary || 'Negotiable', featured });
+    localStorage.setItem('kl_jobs', JSON.stringify(jobs));
+
+    const jobList = document.getElementById('jobList');
+    const card = document.createElement('div');
+    card.className = 'card job-card' + (featured ? ' featured' : '');
+    card.dataset.tags = (location + ' ' + title).toLowerCase();
+    card.innerHTML = `
+      <div class="job-header">
+        <div class="job-title">${title}</div>
+        ${featured ? '<span class="badge badge-featured">⭐ Featured</span>' : '<span class="badge badge-new">NEW</span>'}
+      </div>
+      <div class="job-meta">
+        <span>📍 ${location || 'Kenya'}</span>
+        <span>💵 ${salary || 'Negotiable'}</span>
+      </div>
+      <button class="btn btn-${featured ? 'gold' : 'primary'} btn-sm" onclick="applyFor('${title}')">Apply Now →</button>
+    `;
+    jobList.appendChild(card);
+
+    document.getElementById('adminTitle').value = '';
+    document.getElementById('adminLocation').value = '';
+    document.getElementById('adminSalary').value = '';
+
+    updateAdminStats();
+    showToast(featured ? '⭐ Featured job posted!' : '📌 Job posted successfully!');
+  }
+
+  /* ── Job Search / Filter ── */
+  let activeFilter = 'all';
+
+  function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    filterJobs();
+  }
+
+  function filterJobs() {
+    const q = (document.getElementById('jobSearch').value || '').toLowerCase();
+    document.querySelectorAll('.job-card').forEach(card => {
+      const tags = (card.dataset.tags || '') + ' ' + card.textContent.toLowerCase();
+      const matchFilter = activeFilter === 'all' || tags.includes(activeFilter);
+      const matchSearch = !q || tags.includes(q);
+      card.style.display = (matchFilter && matchSearch) ? '' : 'none';
+    });
+  }
+
+  /* ── Init ── */
+  updateAppCount();
+</script>
+</body>
+</html>

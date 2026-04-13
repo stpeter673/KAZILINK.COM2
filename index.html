@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BIDII – Benevolent Institute of Development Initiatives</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --deep:   #0e2610;
+      --forest: #1a4a1e;
+      --mid:    #2e7d32;
+      --leaf:   #4caf50;
+      --gold:   #c8a84b;
+      --goldf:  #e8c96a;
+      --cream:  #faf7f0;
+      --parch:  #f2ece0;
+      --text:   #1a2b1c;
+      --muted:  #4a5e4c;
+      --white:  #ffffff;
+      --shadow: 0 4px 24px rgba(26,74,30,0.10);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; line-height: 1.7; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      transition: background 0.4s, box-shadow 0.4s, padding 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(14,38,16,0.97);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 2px 32px rgba(0,0,0,0.3);
+      padding: 0.9rem 3rem;
+    }
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem; font-weight: 700; color: #fff;
+      letter-spacing: 0.06em; cursor: pointer; text-decoration: none;
+    }
+    .nav-brand em { color: var(--gold); font-style: normal; }
+    .nav-links { display: flex; align-items: center; gap: 0.2rem; }
+    .nav-links a {
+      color: rgba(255,255,255,0.72); text-decoration: none;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; padding: 0.5rem 1rem;
+      position: relative; transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 1rem; right: 1rem;
+      height: 1.5px; background: var(--gold);
+      transform: scaleX(0); transform-origin: center;
+      transition: transform 0.25s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--goldf); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    .nav-cta {
+      margin-left: 0.6rem; padding: 0.55rem 1.4rem;
+      background: var(--gold); color: var(--deep); border: none;
+      border-radius: 50px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; text-decoration: none;
+      transition: background 0.25s, box-shadow 0.25s;
+    }
+    .nav-cta:hover { background: var(--goldf); box-shadow: 0 4px 18px rgba(200,168,75,0.45); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh; position: relative;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      overflow: hidden; background: var(--deep);
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 90% 70% at 50% 110%, rgba(46,125,50,0.60) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 85% 15%, rgba(200,168,75,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 15% 85%, rgba(76,175,80,0.09) 0%, transparent 50%),
+        linear-gradient(155deg, #0a1f0c 0%, #0e2610 50%, #122a14 100%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(200,168,75,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,168,75,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-ring {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(200,168,75,0.07); pointer-events: none;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+    }
+    .hero-content {
+      position: relative; z-index: 2; padding: 2rem;
+      max-width: 820px; display: flex; flex-direction: column; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(200,168,75,0.12); border: 1px solid rgba(200,168,75,0.3);
+      border-radius: 50px; padding: 0.4rem 1.1rem; margin-bottom: 2rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      animation: fadeUp 0.8s ease both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+      animation: pulse 2s ease infinite;
+    }
+    .hero-h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(5rem, 15vw, 10rem); font-weight: 700;
+      color: #fff; line-height: 0.9; letter-spacing: -0.01em;
+      animation: fadeUp 0.9s ease 0.1s both;
+    }
+    .hero-h1 em { color: var(--gold); font-style: normal; }
+    .hero-sub {
+      font-size: clamp(0.72rem, 1.5vw, 0.85rem); font-weight: 500;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); margin-top: 1rem;
+      animation: fadeUp 0.9s ease 0.2s both;
+    }
+    .hero-divider {
+      width: 1px; height: 55px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      margin: 2rem auto; animation: fadeUp 1s ease 0.3s both;
+    }
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: clamp(1.05rem, 2.5vw, 1.45rem); color: rgba(255,255,255,0.62);
+      max-width: 540px; line-height: 1.75;
+      animation: fadeUp 1s ease 0.35s both;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 1s ease 0.45s both;
+    }
+    .btn-gold {
+      padding: 0.9rem 2.2rem; background: var(--gold); color: var(--deep);
+      border: none; border-radius: 50px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
+      font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      text-decoration: none; display: inline-block;
+      transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+    }
+    .btn-gold:hover { background: var(--goldf); box-shadow: 0 6px 24px rgba(200,168,75,0.45); transform: translateY(-2px); }
+    .btn-ghost {
+      padding: 0.9rem 2.2rem; background: transparent;
+      color: rgba(255,255,255,0.75); border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 50px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
+      font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.25s, color 0.25s, transform 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .scroll-cue {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: rgba(255,255,255,0.25); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      animation: fadeUp 1.2s ease 0.9s both;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent);
+      animation: scrollDrop 2.2s ease infinite;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1120px; margin: 0 auto; }
+    .eyebrow {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.35em;
+      text-transform: uppercase; color: var(--mid); margin-bottom: 0.6rem;
+    }
+    .sec-h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.1rem, 5vw, 3.2rem); font-weight: 700;
+      color: var(--forest); line-height: 1.15; margin-bottom: 1rem;
+    }
+    .gold-bar { width: 48px; height: 2px; background: var(--gold); margin-bottom: 2.5rem; }
+
+    /* ── ABOUT ── */
+    #about { background: var(--cream); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .about-text p { color: var(--muted); font-size: 1rem; line-height: 1.85; margin-bottom: 1.3rem; }
+    .fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .fact-card {
+      background: #fff; border-radius: 14px; padding: 1.5rem;
+      border: 1px solid rgba(46,125,50,0.1); box-shadow: var(--shadow);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .fact-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(26,74,30,0.13); }
+    .fact-icon { font-size: 1.8rem; margin-bottom: 0.7rem; display: block; }
+    .fact-card h4 {
+      font-family: 'Cormorant Garamond', serif; font-weight: 600;
+      font-size: 1rem; color: var(--forest); margin-bottom: 0.3rem;
+    }
+    .fact-card p { font-size: 0.84rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── STATS ── */
+    .stats-band { background: var(--forest); padding: 4rem 2rem; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      max-width: 1120px; margin: 0 auto; gap: 2rem; text-align: center;
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem,5vw,4rem); font-weight: 700; color: var(--gold); line-height: 1;
+    }
+    .stat-lbl {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 0.5rem;
+    }
+
+    /* ── MISSION ── */
+    #mission { background: var(--deep); }
+    #mission .eyebrow { color: rgba(200,168,75,0.7); }
+    #mission .sec-h2 { color: #fff; }
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .m-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 20px; padding: 2.8rem 2.2rem;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .m-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(200,168,75,0.35); }
+    .m-top { width: 60px; height: 3px; background: linear-gradient(90deg,var(--gold),transparent); border-radius:2px; margin-bottom: 1.8rem; }
+    .m-icon { font-size: 2.4rem; display: block; margin-bottom: 1rem; }
+    .m-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 1rem; }
+    .m-card p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; color: rgba(255,255,255,0.68); line-height: 1.85; }
+
+    /* ── VERSE ── */
+    .verse { background: var(--gold); padding: 3.5rem 2rem; text-align: center; }
+    .verse blockquote {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: clamp(1.1rem,2.5vw,1.5rem); color: var(--deep);
+      max-width: 780px; margin: 0 auto; line-height: 1.8;
+    }
+    .verse cite {
+      display: block; margin-top: 1rem;
+      font-family: 'DM Sans', sans-serif; font-style: normal;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(14,38,16,0.5);
+    }
+
+    /* ── PROGRAMS ── */
+    #programs { background: var(--parch); }
+    .prog-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+    .prog-card {
+      background: #fff; border-radius: 18px; padding: 2.2rem 1.8rem;
+      border: 1px solid rgba(46,125,50,0.08);
+      box-shadow: 0 2px 16px rgba(26,74,30,0.06);
+      display: flex; flex-direction: column; gap: 0.7rem;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .prog-card:hover { transform: translateY(-8px); box-shadow: 0 18px 48px rgba(26,74,30,0.15); border-color: rgba(200,168,75,0.35); }
+    .prog-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: linear-gradient(135deg,rgba(46,125,50,0.1),rgba(76,175,80,0.05));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; transition: background 0.3s;
+    }
+    .prog-card:hover .prog-icon { background: linear-gradient(135deg,rgba(200,168,75,0.15),rgba(200,168,75,0.05)); }
+    .prog-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--forest); }
+    .prog-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; flex: 1; }
+    .prog-more {
+      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--mid);
+      opacity: 0; transform: translateX(-6px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .prog-card:hover .prog-more { opacity: 1; transform: translateX(0); }
+
+    /* ── IMPACT ── */
+    #impact { background: var(--cream); }
+    .impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .impact-text p { color: var(--muted); font-size: 1rem; line-height: 1.85; margin-bottom: 1.2rem; }
+    .pillars { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.5rem; }
+    .pillar {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem; background: #fff;
+      border-radius: 12px; border: 1px solid rgba(46,125,50,0.08);
+      box-shadow: 0 2px 12px rgba(26,74,30,0.05);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .pillar:hover { box-shadow: 0 6px 20px rgba(26,74,30,0.1); border-color: rgba(200,168,75,0.3); }
+    .p-icon {
+      width: 40px; height: 40px; border-radius: 10px; background: var(--forest);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .p-label { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+    .impact-box {
+      background: var(--forest); border-radius: 24px; padding: 3rem 2.5rem;
+      color: #fff; position: relative; overflow: hidden;
+    }
+    .impact-box::before {
+      content: ''; position: absolute; top: -40px; right: -40px;
+      width: 200px; height: 200px; border-radius: 50%;
+      background: rgba(200,168,75,0.08);
+    }
+    .impact-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; color: var(--gold); margin-bottom: 1.2rem; }
+    .impact-box p { color: rgba(255,255,255,0.68); font-size: 0.93rem; line-height: 1.85; margin-bottom: 1rem; }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--parch); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .contact-intro p { color: var(--muted); font-size: 1rem; line-height: 1.8; margin-bottom: 2rem; }
+    .c-items { display: flex; flex-direction: column; gap: 1rem; }
+    .c-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.1rem 1.3rem; background: #fff;
+      border-radius: 12px; border: 1px solid rgba(46,125,50,0.08);
+      box-shadow: 0 2px 10px rgba(26,74,30,0.05);
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+    .c-item:hover { box-shadow: 0 6px 22px rgba(26,74,30,0.1); border-color: rgba(200,168,75,0.3); }
+    .c-ico {
+      width: 44px; height: 44px; border-radius: 50%; background: var(--forest);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .c-body strong {
+      display: block; font-size: 0.64rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.2rem;
+    }
+    .c-body span { font-size: 0.92rem; color: var(--text); }
+    .c-panel {
+      background: var(--deep); border-radius: 24px; padding: 3rem 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .c-panel::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 180px; height: 180px; border-radius: 50%;
+      background: rgba(200,168,75,0.07);
+    }
+    .c-panel h3 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold); margin-bottom: 1rem; }
+    .c-panel p { color: rgba(255,255,255,0.65); font-size: 0.93rem; line-height: 1.8; margin-bottom: 1.8rem; }
+    .c-btns { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .btn-ghost-dk {
+      padding: 0.9rem 2rem; background: transparent;
+      color: rgba(255,255,255,0.75); border: 1.5px solid rgba(255,255,255,0.22);
+      border-radius: 50px; text-decoration: none; display: inline-block;
+      font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
+      font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      transition: border-color 0.25s, color 0.25s;
+    }
+    .btn-ghost-dk:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070f08; padding: 3.5rem 2rem; text-align: center;
+      border-top: 1px solid rgba(200,168,75,0.1);
+    }
+    .f-logo {
+      font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700;
+      color: #fff; margin-bottom: 0.4rem; display: block;
+    }
+    .f-logo em { color: var(--gold); font-style: normal; }
+    .f-tagline {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1rem; color: rgba(200,168,75,0.55); margin-bottom: 1.5rem;
+    }
+    .f-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .f-links a {
+      color: rgba(255,255,255,0.3); text-decoration: none;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .f-links a:hover { color: var(--gold); }
+    .f-copy { font-size: 0.72rem; color: rgba(255,255,255,0.2); line-height: 1.9; }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(28px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    @keyframes scrollDrop {
+      0%   { opacity:0; transform: scaleY(0.3) translateY(-60%); }
+      40%  { opacity:1; }
+      100% { opacity:0; transform: scaleY(1) translateY(20%); }
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.65); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .about-grid, .mission-grid, .impact-grid, .contact-grid { grid-template-columns:1fr; gap:2.5rem; }
+      .prog-grid { grid-template-columns:1fr 1fr; }
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      nav { padding: 1rem 1.5rem; }
+      nav.scrolled { padding: 0.8rem 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .prog-grid, .fact-grid { grid-template-columns:1fr; }
+      .nav-links { display:none; }
+      .hero-h1 { font-size: 4.5rem; }
+      section { padding: 4rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-brand" href="#hero">B<em>I</em>DII</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#mission">Mission</a>
+    <a href="#programs">Programs</a>
+    <a href="#impact">Impact</a>
+    <a href="#contact">Contact</a>
+    <a class="nav-cta" href="#contact">Get Involved</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-ring" style="width:480px;height:480px;"></div>
+  <div class="hero-ring" style="width:760px;height:760px;"></div>
+  <div class="hero-ring" style="width:1080px;height:1080px;"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Machakos, Kenya &nbsp;·&nbsp; Est. 2006
+    </div>
+    <h1 class="hero-h1">B<em>I</em>DII</h1>
+    <p class="hero-sub">Benevolent Institute of Development Initiatives</p>
+    <div class="hero-divider"></div>
+    <p class="hero-tagline">Empowering communities to become masters of their own destiny, in fellowship with God.</p>
+    <div class="hero-actions">
+      <a class="btn-gold" href="#programs">Our Programs</a>
+      <a class="btn-ghost" href="#contact">Partner With Us</a>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <p class="eyebrow reveal">Who We Are</p>
+        <h2 class="sec-h2 reveal" style="transition-delay:0.05s">Rooted in Faith,<br>Committed to Community</h2>
+        <div class="gold-bar reveal" style="transition-delay:0.1s"></div>
+        <div class="about-text">
+          <p class="reveal" style="transition-delay:0.12s">BIDII is a Christian-based, non-profit organisation registered in Kenya, dedicated to building community capacity and improving livelihoods across vulnerable and underserved populations.</p>
+          <p class="reveal" style="transition-delay:0.18s">With headquarters in Machakos County, we extend our reach across multiple counties — bringing together people of goodwill to share talent, time, and treasure in service of a greater purpose.</p>
+          <p class="reveal" style="transition-delay:0.24s">We believe that lasting change must come from within communities themselves. Every initiative we undertake is designed to empower people and cultivate resilience, not dependency.</p>
+        </div>
+      </div>
+      <div class="fact-grid">
+        <div class="fact-card reveal" style="transition-delay:0.1s">
+          <span class="fact-icon">📍</span>
+          <h4>Headquarters</h4>
+          <p>Machakos County, Kenya</p>
+        </div>
+        <div class="fact-card reveal" style="transition-delay:0.18s">
+          <span class="fact-icon">🌍</span>
+          <h4>Reach</h4>
+          <p>Multiple counties across Kenya</p>
+        </div>
+        <div class="fact-card reveal" style="transition-delay:0.26s">
+          <span class="fact-icon">✝️</span>
+          <h4>Foundation</h4>
+          <p>Christian-based, registered non-profit organisation</p>
+        </div>
+        <div class="fact-card reveal" style="transition-delay:0.34s">
+          <span class="fact-icon">🤝</span>
+          <h4>Approach</h4>
+          <p>Holistic & community-driven development</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stats-grid">
+    <div class="reveal">
+      <div class="stat-num">6+</div>
+      <div class="stat-lbl">Program Areas</div>
+    </div>
+    <div class="reveal" style="transition-delay:0.08s">
+      <div class="stat-num">10+</div>
+      <div class="stat-lbl">Counties Reached</div>
+    </div>
+    <div class="reveal" style="transition-delay:0.16s">
+      <div class="stat-num">2006</div>
+      <div class="stat-lbl">Year Founded</div>
+    </div>
+    <div class="reveal" style="transition-delay:0.24s">
+      <div class="stat-num">∞</div>
+      <div class="stat-lbl">Community Impact</div>
+    </div>
+  </div>
+</div>
+
+<!-- MISSION -->
+<section id="mission">
+  <div class="container">
+    <p class="eyebrow reveal">Purpose & Direction</p>
+    <h2 class="sec-h2 reveal" style="transition-delay:0.05s">Our Vision &amp; Mission</h2>
+    <div class="gold-bar reveal" style="transition-delay:0.1s"></div>
+    <div class="mission-grid">
+      <div class="m-card reveal" style="transition-delay:0.12s">
+        <div class="m-top"></div>
+        <span class="m-icon">🌅</span>
+        <h3>Our Vision</h3>
+        <p>"To see communities that are masters of their own destiny in fellowship with God."</p>
+      </div>
+      <div class="m-card reveal" style="transition-delay:0.22s">
+        <div class="m-top"></div>
+        <span class="m-icon">🌱</span>
+        <h3>Our Mission</h3>
+        <p>"To facilitate capacity building of disadvantaged communities through holistic and innovative approaches for improved livelihoods."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VERSE -->
+<div class="verse reveal">
+  <blockquote>
+    "Sharing our resources — talent, time, and treasure — to build the Kingdom of God."
+    <cite>BIDII Core Value</cite>
+  </blockquote>
+</div>
+
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="container">
+    <p class="eyebrow reveal">What We Do</p>
+    <h2 class="sec-h2 reveal" style="transition-delay:0.05s">Our Programs</h2>
+    <div class="gold-bar reveal" style="transition-delay:0.1s"></div>
+    <div class="prog-grid">
+      <div class="prog-card reveal" style="transition-delay:0.08s">
+        <div class="prog-icon">🏥</div>
+        <h3>Health Services</h3>
+        <p>Improving access to quality healthcare for women, children, and vulnerable groups through preventive and primary care initiatives.</p>
+        <div class="prog-more">Learn more →</div>
+      </div>
+      <div class="prog-card reveal" style="transition-delay:0.14s">
+        <div class="prog-icon">🎗️</div>
+        <h3>HIV/AIDS Awareness</h3>
+        <p>Community-wide education, stigma reduction, and compassionate support systems for those living with and affected by HIV/AIDS.</p>
+        <div class="prog-more">Learn more →</div>
+      </div>
+      <div class="prog-card reveal" style="transition-delay:0.2s">
+        <div class="prog-icon">💼</div>
+        <h3>Economic Empowerment</h3>
+        <p>Building sustainable livelihoods through skills training, micro-enterprise support, and financial literacy programmes.</p>
+        <div class="prog-more">Learn more →</div>
+      </div>
+      <div class="prog-card reveal" style="transition-delay:0.08s">
+        <div class="prog-icon">🛡️</div>
+        <h3>Child Protection</h3>
+        <p>Safeguarding children from exploitation and abuse through advocacy, community awareness, and direct support services.</p>
+        <div class="prog-more">Learn more →</div>
+      </div>
+      <div class="prog-card reveal" style="transition-delay:0.14s">
+        <div class="prog-icon">💧</div>
+        <h3>Water &amp; Sanitation</h3>
+        <p>Promoting access to safe drinking water, improved sanitation facilities, and environmentally responsible community practices.</p>
+        <div class="prog-more">Learn more →</div>
+      </div>
+      <div class="prog-card reveal" style="transition-delay:0.2s">
+        <div class="prog-icon">🏛️</div>
+        <h3>Governance &amp; Advocacy</h3>
+        <p>Encouraging civic participation, transparent leadership, and amplifying community voice in local governance processes.</p>
+        <div class="prog-more">Learn more →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="container">
+    <div class="impact-grid">
+      <div>
+        <p class="eyebrow reveal">Our Approach</p>
+        <h2 class="sec-h2 reveal" style="transition-delay:0.05s">Why Community<br>Comes First</h2>
+        <div class="gold-bar reveal" style="transition-delay:0.1s"></div>
+        <div class="impact-text">
+          <p class="reveal" style="transition-delay:0.12s">At BIDII, we don't just deliver services — we walk alongside communities, building trust and cultivating local leadership that sustains change long after our involvement.</p>
+          <p class="reveal" style="transition-delay:0.18s">Our holistic approach addresses the interconnected roots of poverty: health, education, economic stability, clean water, governance, and spiritual wellbeing.</p>
+        </div>
+        <div class="pillars">
+          <div class="pillar reveal" style="transition-delay:0.2s">
+            <div class="p-icon">💡</div>
+            <span class="p-label">Innovative, context-driven solutions</span>
+          </div>
+          <div class="pillar reveal" style="transition-delay:0.27s">
+            <div class="p-icon">🌿</div>
+            <span class="p-label">Long-term community sustainability</span>
+          </div>
+          <div class="pillar reveal" style="transition-delay:0.34s">
+            <div class="p-icon">🤲</div>
+            <span class="p-label">Faith-based, values-led programming</span>
+          </div>
+          <div class="pillar reveal" style="transition-delay:0.41s">
+            <div class="p-icon">📊</div>
+            <span class="p-label">Accountable, transparent operations</span>
+          </div>
+        </div>
+      </div>
+      <div class="impact-box reveal" style="transition-delay:0.15s">
+        <h3>Our Promise to Communities</h3>
+        <p>Every programme we run is designed with local voices at its core. We believe that communities are not passive recipients of aid — they are the architects of their own transformation.</p>
+        <p>BIDII serves as a catalyst and partner, equipping individuals and groups with the tools, knowledge, and confidence to create lasting, generational change.</p>
+        <p>From Machakos County to the wider region, our presence is felt through healthier families, stronger businesses, cleaner water, and more engaged citizens.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <p class="eyebrow reveal">Reach Out</p>
+    <h2 class="sec-h2 reveal" style="transition-delay:0.05s">Contact Us</h2>
+    <div class="gold-bar reveal" style="transition-delay:0.1s"></div>
+    <div class="contact-grid">
+      <div class="contact-intro">
+        <p class="reveal" style="transition-delay:0.12s">We welcome partnerships, volunteers, donors, and community members. Together we can build something that lasts for generations.</p>
+        <div class="c-items">
+          <div class="c-item reveal" style="transition-delay:0.18s">
+            <div class="c-ico">📞</div>
+            <div class="c-body">
+              <strong>Phone</strong>
+              <span>0728 699 000</span>
+            </div>
+          </div>
+          <div class="c-item reveal" style="transition-delay:0.24s">
+            <div class="c-ico">✉️</div>
+            <div class="c-body">
+              <strong>Email</strong>
+              <span>bidii2006@yahoo.com</span>
+            </div>
+          </div>
+          <div class="c-item reveal" style="transition-delay:0.30s">
+            <div class="c-ico">📍</div>
+            <div class="c-body">
+              <strong>Location</strong>
+              <span>Machakos, Kenya</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="c-panel reveal" style="transition-delay:0.2s">
+        <h3>Partner With Us</h3>
+        <p>BIDII is always looking for committed individuals, organisations, and donors who share our vision. Your support — however big or small — makes a lasting difference in real lives across Kenya.</p>
+        <div class="c-btns">
+          <a class="btn-gold" href="mailto:bidii2006@yahoo.com">Send a Message</a>
+          <a class="btn-ghost-dk" href="tel:0728699000">Call Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="f-logo">B<em>I</em>DII</span>
+  <div class="f-tagline">Benevolent Institute of Development Initiatives</div>
+  <div class="f-links">
+    <a href="#about">About</a>
+    <a href="#mission">Mission</a>
+    <a href="#programs">Programs</a>
+    <a href="#impact">Impact</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="f-copy">
+    Machakos, Kenya &nbsp;·&nbsp; 0728 699 000 &nbsp;·&nbsp; bidii2006@yahoo.com<br>
+    <span style="opacity:0.5">© 2006 BIDII. Registered Non-Profit Organisation, Kenya.</span>
+  </div>
+</footer>
+
+<script>
+  // Sticky nav
+  const nav = document.getElementById('main-nav');
+  const navLinks = document.querySelectorAll('.nav-links a:not(.nav-cta)');
+  const sections = ['about','mission','programs','impact','contact'];
+
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+
+    let current = '';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - 140) current = id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
